@@ -1,6 +1,8 @@
 package ifsc.joe.ui;
 
 import ifsc.joe.domain.impl.Aldeao;
+import ifsc.joe.domain.impl.Arqueiro;
+import ifsc.joe.domain.impl.Cavaleiro;
 import ifsc.joe.enums.Direcao;
 
 import javax.swing.*;
@@ -11,6 +13,9 @@ import java.util.Set;
 public class Tela extends JPanel {
 
     private final Set<Aldeao> aldeoes;
+    private final Set<Arqueiro> arqueiros;
+    private final Set<Cavaleiro> cavaleiros;
+
 
     public Tela() {
 
@@ -18,6 +23,8 @@ public class Tela extends JPanel {
 
         this.setBackground(Color.white);
         this.aldeoes = new HashSet<>();
+        this.arqueiros = new HashSet<>();
+        this.cavaleiros = new HashSet<>();
     }
 
     /**
@@ -32,6 +39,8 @@ public class Tela extends JPanel {
 
         // percorrendo a lista de aldeões e pedindo para cada um se desenhar na tela
         this.aldeoes.forEach(aldeao -> aldeao.desenhar(g, this));
+        this.arqueiros.forEach(arqueiro -> arqueiro.desenhar(g, this));
+        this.cavaleiros.forEach(cavaleiro -> cavaleiro.desenhar(g, this));
 
         // liberando o contexto gráfico
         g.dispose();
@@ -44,10 +53,23 @@ public class Tela extends JPanel {
      * @param x coordenada X
      * @param y coordenada Y
      */
+
     public void criarAldeao(int x, int y) {
         Aldeao a = new Aldeao(x, y);
         a.desenhar(super.getGraphics(), this);
         this.aldeoes.add(a);
+    }
+
+    public void criarArqueiro(int x, int y) {
+        Arqueiro a = new Arqueiro(x, y);
+        a.desenhar(super.getGraphics(), this);
+        this.arqueiros.add(a);
+    }
+
+    public void criarCavaleiro(int x, int y) {
+        Cavaleiro a = new Cavaleiro(x, y);
+        a.desenhar(super.getGraphics(), this);
+        this.cavaleiros.add(a);
     }
 
     /**
