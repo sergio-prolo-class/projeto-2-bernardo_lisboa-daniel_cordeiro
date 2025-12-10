@@ -2,28 +2,55 @@ package ifsc.joe.domain.impl;
 
 import ifsc.joe.enums.Direcao;
 
+import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public abstract class Personagem {
-
     protected int vida, ataque, velocidade, esquiva;
     protected String nome;
     protected int posX, posY;
     protected boolean atacando;
     protected Image icone;
+    protected String nomeImagem;
+
+    public Personagem(String nome, String nomeImagem, int x, int y) {
+        this.nome = nome;
+        this.nomeImagem = nomeImagem;
+        this.posX = x;
+        this.posY = y;
+        this.icone = carregarImagem(nomeImagem);
+    }
+
+    // Método abstrato para inicializar atributos específicos
+    public abstract void inicializarAtributos();
 
     public void mover(Direcao direcao, int maxLargura, int maxAltura) {
         switch (direcao) {
-            case CIMA     -> this.posY -= 10;
-            case BAIXO    -> this.posY += 10;
-            case ESQUERDA -> this.posX -= 10;
-            case DIREITA  -> this.posX += 10;
+            case CIMA     -> this.posY -= this.velocidade;
+            case BAIXO    -> this.posY += this.velocidade;
+            case ESQUERDA -> this.posX -= this.velocidade;
+            case DIREITA  -> this.posX += this.velocidade;
         }
 
-        //Não deixa a imagem ser desenhada fora dos limites do JPanel pai
         this.posX = Math.min(Math.max(0, this.posX), maxLargura - this.icone.getWidth(null));
         this.posY = Math.min(Math.max(0, this.posY), maxAltura - this.icone.getHeight(null));
     }
+
+    public void desenhar(Graphics g, JPanel painel) {
+        this.icone = this.carregarImagem(nomeImagem + (atacando ? "2" : ""));
+        g.drawImage(this.icone, this.posX, this.posY, painel);
+    }
+
+    public void atacar() {
+        this.atacando = !this.atacando;
+    }
+
+    protected Image carregarImagem(String imagem) {
+        return new ImageIcon(Objects.requireNonNull(
+                getClass().getClassLoader().getResource("./" + imagem + ".png")
+        )).getImage();
+    }
+
+    public String getTipo() { return this.getClass().getSimpleName(); }
 }
-
-

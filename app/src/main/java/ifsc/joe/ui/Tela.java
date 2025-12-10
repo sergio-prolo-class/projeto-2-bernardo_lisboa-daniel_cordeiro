@@ -1,8 +1,6 @@
 package ifsc.joe.ui;
 
-import ifsc.joe.domain.impl.Aldeao;
-import ifsc.joe.domain.impl.Arqueiro;
-import ifsc.joe.domain.impl.Cavaleiro;
+import ifsc.joe.domain.impl.*;
 import ifsc.joe.enums.Direcao;
 
 import javax.swing.*;
@@ -12,91 +10,68 @@ import java.util.Set;
 
 public class Tela extends JPanel {
 
-    private final Set<Aldeao> aldeoes;
-    private final Set<Arqueiro> arqueiros;
-    private final Set<Cavaleiro> cavaleiros;
-
+    private final Set<Personagem> personagens;
+    private String tipoSelecionado = "TODOS";
 
     public Tela() {
-
-        //TODO preciso ser melhorado
-
         this.setBackground(Color.white);
-        this.aldeoes = new HashSet<>();
-        this.arqueiros = new HashSet<>();
-        this.cavaleiros = new HashSet<>();
+        this.personagens = new HashSet<>();
     }
 
-    /**
-     * Method que invocado sempre que o JPanel precisa ser resenhado.
-     * @param g Graphics componente de java.awt
-     */
     @Override
     public void paint(Graphics g) {
         super.paint(g);
 
-        //TODO preciso ser melhorado
+        this.personagens.forEach(personagem -> personagem.desenhar(g, this));
 
-        // percorrendo a lista de aldeões e pedindo para cada um se desenhar na tela
-        this.aldeoes.forEach(aldeao -> aldeao.desenhar(g, this));
-        this.arqueiros.forEach(arqueiro -> arqueiro.desenhar(g, this));
-        this.cavaleiros.forEach(cavaleiro -> cavaleiro.desenhar(g, this));
-
-        // liberando o contexto gráfico
         g.dispose();
     }
 
-    /**
-     * Cria um aldeao nas coordenadas X e Y, desenha-o neste JPanel
-     * e adiciona o mesmo na lista de aldeoes
-     *
-     * @param x coordenada X
-     * @param y coordenada Y
-     */
+    public void criarPersonagem(Personagem personagem) {
+        personagem.desenhar(super.getGraphics(), this);
+        this.personagens.add(personagem);
+        this.repaint();
+    }
+
+    public void movimentarPersonagens(Direcao direcao) {
+        this.personagens.stream()
+                .filter(p -> tipoSelecionado.equals("TODOS") || p.getTipo().equalsIgnoreCase(tipoSelecionado))
+                .forEach(p -> p.mover(direcao, this.getWidth(), this.getHeight()));
+
+        this.repaint();
+    }
+
+    public void atacarPersonagens() {
+        this.personagens.stream()
+                .filter(p -> tipoSelecionado.equals("TODOS") || p.getTipo().equalsIgnoreCase(tipoSelecionado))
+                .forEach(Personagem::atacar);
+
+        this.repaint();
+    }
+
+    public void setTipoSelecionado(String tipo) {
+        this.tipoSelecionado = tipo.toUpperCase();
+    }
+
+    public String getEstatisticas() {
+        long total = personagens.size();
+        long aldeoes = personagens.stream().filter(p -> p instanceof Aldeao).count();
+        long arqueiros = personagens.stream().filter(p -> p instanceof Arqueiro).count();
+        long cavaleiros = personagens.stream().filter(p -> p instanceof Cavaleiro).count();
+
+        return String.format("Total: %d | Aldeões: %d | Arqueiros: %d | Cavaleiros: %d",
+                total, aldeoes, arqueiros, cavaleiros);
+    }
 
     public void criarAldeao(int x, int y) {
-        Aldeao a = new Aldeao(x, y);
-        a.desenhar(super.getGraphics(), this);
-        this.aldeoes.add(a);
+        criarPersonagem(new Aldeao(x, y));
     }
 
     public void criarArqueiro(int x, int y) {
-        Arqueiro a = new Arqueiro(x, y);
-        a.desenhar(super.getGraphics(), this);
-        this.arqueiros.add(a);
+        criarPersonagem(new Arqueiro(x, y));
     }
 
     public void criarCavaleiro(int x, int y) {
-        Cavaleiro a = new Cavaleiro(x, y);
-        a.desenhar(super.getGraphics(), this);
-        this.cavaleiros.add(a);
-    }
-
-    /**
-     * Atualiza as coordenadas X ou Y de todos os aldeoes
-     *
-     * @param direcao direcao para movimentar
-     */
-    public void movimentarAldeoes(Direcao direcao) {
-        //TODO preciso ser melhorado
-
-        this.aldeoes.forEach(aldeao -> aldeao.mover(direcao, this.getWidth(), this.getHeight()));
-
-        // Depois que as coordenadas foram atualizadas é necessário repintar o JPanel
-        this.repaint();
-    }
-
-    /**
-     * Altera o estado do aldeão de atacando para não atacando e vice-versa
-     */
-    public void atacarAldeoes() {
-
-        //TODO preciso ser melhorado
-
-        // Percorrendo a lista de aldeões e pedindo para todos atacarem
-        this.aldeoes.forEach(Aldeao::atacar);
-
-        // Fazendo o JPanel ser redesenhado
-        this.repaint();
+        criarPersonagem(new Cavaleiro(x, y));
     }
 }
