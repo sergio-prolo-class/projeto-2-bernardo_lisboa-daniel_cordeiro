@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Tela extends JPanel {
+public class Tela extends JPanel{
 
     private final Set<Personagem> personagens;
     private String tipoSelecionado = "TODOS";
