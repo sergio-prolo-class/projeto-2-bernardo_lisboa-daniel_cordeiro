@@ -21,6 +21,7 @@ public class Aldeao extends Personagem implements Coletador, ComMontaria{
     @Override
     public void inicializarAtributos() {
         this.vida = 10;
+        this.vidaMaxima = 10;
         this.ataque = 10;
         this.velocidade = 10;
         this.esquiva = 10;
@@ -30,7 +31,6 @@ public class Aldeao extends Personagem implements Coletador, ComMontaria{
     public boolean coletar(Recurso recurso) {
         boolean podeColetar = COLETAVEIS.contains(recurso);
         if (podeColetar) {
-            System.out.println("Aldeão coletou: " + recurso);
         }
         return podeColetar;
     }
@@ -40,18 +40,14 @@ public class Aldeao extends Personagem implements Coletador, ComMontaria{
         this.montado = !this.montado;
 
         if (montado) {
-            // Monta: velocidade DOBRA (1 → 2)
             this.velocidade = (int)(velocidadeOriginal * 2);
-            this.nomeImagem = "aldeao_montado"; // Você precisa ter esta imagem
+            this.nomeImagem = "aldeao_montado";
         } else {
             this.velocidade = (int)velocidadeOriginal;
             this.nomeImagem = "aldeao_montado";
         }
 
         this.icone = carregarImagem(this.nomeImagem);
-
-        System.out.println("Aldeão " + (montado ? "montou" : "desmontou") +
-                ". Velocidade: " + this.velocidade);
     }
 
     @Override

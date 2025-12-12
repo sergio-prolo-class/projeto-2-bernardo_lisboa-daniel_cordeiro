@@ -18,9 +18,11 @@ public class Cavaleiro extends Personagem implements  ComMontaria, Guerreiro {
     @Override
     public void inicializarAtributos() {
         this.vida = 10;
+        this.vidaMaxima = 10;
         this.ataque = 10;
         this.velocidade = 10;
         this.esquiva = 10;
+        this.alcanceAtaque = 15;
     }
 
     @Override
@@ -28,45 +30,47 @@ public class Cavaleiro extends Personagem implements  ComMontaria, Guerreiro {
         this.montado = !this.montado;
 
         if (montado) {
-            // Monta: volta à velocidade normal
             this.velocidade = (int)velocidadeOriginal;
             this.nomeImagem = NOME_IMAGEM;
         } else {
-            // Desmonta: velocidade REDUZ pela metade (2 → 1)
             this.velocidade = (int)(velocidadeOriginal / 2);
             this.nomeImagem = "cavaleiro_desmontado";
         }
 
         this.icone = carregarImagem(this.nomeImagem);
-
-        System.out.println("Cavaleiro " + (montado ? "montou" : "desmontou") +
-                ". Velocidade: " + this.velocidade);
     }
 
     @Override
     public String atacar(Personagem alvo) {
+
         if (!estaVivo()) {
             return "Cavaleiro não pode atacar porque está morto!";
         }
 
-        int dano = this.ataque;
-        // Bônus de ataque quando montado
-        if (montado) {
-            dano += 2;
+        if (alvo == this) {
+            return "Cavaleiro não pode atacar a si mesmo!";
         }
+
+        if (!alvo.estaVivo()) {
+            return "Não pode atacar " + alvo.getNome() + " porque já está morto!";
+        }
+
+        if (!alvoNoAlcance(alvo)) {
+            double distancia = calcularDistancia(alvo);
+            return String.format("%s está longe demais para ataque corpo a corpo! " +
+                            "Distância: %.1f, Alcance: %d",
+                    alvo.getNome(), distancia, alcanceAtaque);
+        }
+
+        int dano = this.ataque;
 
         alvo.sofrerDano(dano);
 
-        // Alterna estado para animação
-        this.atacando = true;
-
-        return String.format(
-                "Cavaleiro atacou causando %d de dano em %s%s%n" +
-                        "%s agora tem %d de vida",
-                dano, alvo.getNome(),
-                montado ? " (bônus por estar montado)" : "",
-                alvo.getNome(), alvo.getVida()
-        );
+        return String.format("%s atacou corpo a corpo (%dpx) causando %d de dano em %s%s%n" +
+                        "%s tem %d de vida restante",
+                getNome(), alcanceAtaque, dano, alvo.getNome(),
+                montado ? " (bônus montado)" : "",
+                alvo.getNome(), alvo.getVida());
     }
 
     @Override
