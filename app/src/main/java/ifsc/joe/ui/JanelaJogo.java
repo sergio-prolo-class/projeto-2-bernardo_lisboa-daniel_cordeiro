@@ -2,6 +2,7 @@ package ifsc.joe.ui;
 
 import javax.swing.*;
 
+
 /**
  * Classe responsável pela configuração e exibição da janela principal do jogo.
  */
@@ -27,6 +28,7 @@ public class JanelaJogo {
         frame.setContentPane(painelControles.getPainelPrincipal());
         frame.pack();
         frame.setLocationRelativeTo(null); // Centralizar na tela
+        
     }
 
     /**
@@ -35,4 +37,5 @@ public class JanelaJogo {
     public void exibir() {
         frame.setVisible(true);
     }
+    
 }

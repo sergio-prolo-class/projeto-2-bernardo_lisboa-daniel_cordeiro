@@ -4,6 +4,8 @@ import ifsc.joe.domain.impl.*;
 import ifsc.joe.enums.Direcao;
 
 import javax.swing.*;
+
+import java.awt.event.ActionEvent;
 import java.util.Random;
 
 public class PainelControles {
@@ -33,9 +35,11 @@ public class PainelControles {
 
     public PainelControles() {
         this.sorteio = new Random();
-        configurarSelecaoTipo();
-        configurarListeners();
-        atualizarEstatisticas();
+        SwingUtilities.invokeLater(() -> {
+            configurarSelecaoTipo();
+            configurarListeners();
+            atualizarEstatisticas();
+        });
     }
 
     private void configurarSelecaoTipo() {
@@ -50,6 +54,7 @@ public class PainelControles {
     }
 
     private void configurarListeners() {
+        configurarKeyListener();
         configurarBotoesSelecao();
         configurarBotoesMovimento();
         configurarBotoesCriacao();
@@ -109,6 +114,75 @@ public class PainelControles {
         });
     }
 
+    public void configurarKeyListener() {
+        painelPrincipal.setFocusable(true);
+        painelPrincipal.setFocusTraversalKeysEnabled(false);
+        painelPrincipal.requestFocusInWindow();
+        bind(painelPrincipal, "W", () -> {
+            getTela().movimentarPersonagens(Direcao.CIMA);
+            atualizarEstatisticas();
+        });
+
+        bind(painelPrincipal, "A", () -> {
+            getTela().movimentarPersonagens(Direcao.ESQUERDA);
+            atualizarEstatisticas();
+        });
+
+        bind(painelPrincipal, "S", () -> {
+            getTela().movimentarPersonagens(Direcao.BAIXO);
+            atualizarEstatisticas();
+        });
+
+        bind(painelPrincipal, "D", () -> {
+            getTela().movimentarPersonagens(Direcao.DIREITA);
+            atualizarEstatisticas();
+        });
+
+        bind(painelPrincipal, "1", () -> {
+            criarPersonagemAleatorio("Aldeao");
+            atualizarEstatisticas();
+        });
+
+        bind(painelPrincipal, "2", () -> {
+            criarPersonagemAleatorio("Arqueiro");
+            atualizarEstatisticas();
+        });
+        bind(painelPrincipal, "3", () -> {
+            criarPersonagemAleatorio("Cavaleiro");
+            atualizarEstatisticas();
+        });
+        bind(painelPrincipal, "TAB", () -> {
+            if (todosRadioButton.isSelected()) {
+                aldeaoRadioButton.setSelected(true);
+                getTela().setTipoSelecionado("Aldeao");
+            } else if (aldeaoRadioButton.isSelected()) {
+                arqueiroRadioButton.setSelected(true);
+                getTela().setTipoSelecionado("Arqueiro");
+            } else if (arqueiroRadioButton.isSelected()) {
+                cavaleiroRadioButton.setSelected(true);
+                getTela().setTipoSelecionado("Cavaleiro");
+            } else if (cavaleiroRadioButton.isSelected()) {
+                todosRadioButton.setSelected(true);
+                getTela().setTipoSelecionado("Todos");
+            }
+        });
+        bind(painelPrincipal, "SPACE", () -> {
+            getTela().atacarPersonagens();
+            atualizarEstatisticas();
+        });
+    }
+
+    private void bind(JComponent comp, String key, Runnable action) {
+        comp.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+                .put(KeyStroke.getKeyStroke(key), key);
+
+        comp.getActionMap().put(key, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                action.run();
+            }
+        });
+    }
 
     private void criarPersonagemAleatorio(String tipo) {
         final int PADDING = 50;
