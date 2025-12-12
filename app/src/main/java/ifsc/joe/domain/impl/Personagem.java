@@ -42,9 +42,10 @@ public abstract class Personagem {
         g.drawImage(this.icone, this.posX, this.posY, painel);
     }
 
-    public void atacar() {
-        this.atacando = !this.atacando;
+    public void setAtacando(boolean atacando) {
+        this.atacando = atacando;
     }
+
 
     protected Image carregarImagem(String imagem) {
         return new ImageIcon(Objects.requireNonNull(
@@ -52,5 +53,16 @@ public abstract class Personagem {
         )).getImage();
     }
 
+    public void sofrerDano(int dano) {
+        this.vida = Math.max(0, this.vida - dano);
+        System.out.println(this.nome + " sofreu " + dano + " de dano. Vida: " + this.vida);
+    }
+
+    public boolean estaVivo() {
+        return this.vida > 0;
+    }
+
     public String getTipo() { return this.getClass().getSimpleName(); }
+    public String getNome() { return nome; }
+    public int getVida() { return vida; }
 }
