@@ -11,8 +11,10 @@ public abstract class Personagem {
     protected String nome;
     protected int posX, posY;
     protected boolean atacando;
-    protected Image icone;
+    public Image icone;
     protected String nomeImagem;
+    protected int vidaMaxima;
+    protected int alcanceAtaque;
 
     public Personagem(String nome, String nomeImagem, int x, int y) {
         this.nome = nome;
@@ -26,6 +28,10 @@ public abstract class Personagem {
     public abstract void inicializarAtributos();
 
     public void mover(Direcao direcao, int maxLargura, int maxAltura) {
+        if (!estaVivo()) {
+            return;
+        }
+
         switch (direcao) {
             case CIMA     -> this.posY -= this.velocidade;
             case BAIXO    -> this.posY += this.velocidade;
@@ -38,12 +44,15 @@ public abstract class Personagem {
     }
 
     public void desenhar(Graphics g, JPanel painel) {
-        this.icone = this.carregarImagem(nomeImagem + (atacando ? "2" : ""));
-        g.drawImage(this.icone, this.posX, this.posY, painel);
+        String imagemParaUsar = atacando ? nomeImagem + "2" : nomeImagem;
+
+        Image imagemAtual = carregarImagem(imagemParaUsar);
+
+        g.drawImage(imagemAtual, this.posX, this.posY, painel);
     }
 
-    public void atacar() {
-        this.atacando = !this.atacando;
+    public void setAtacando(boolean atacando) {
+        this.atacando = atacando;
     }
 
     protected Image carregarImagem(String imagem) {
@@ -52,5 +61,32 @@ public abstract class Personagem {
         )).getImage();
     }
 
-    public String getTipo() { return this.getClass().getSimpleName(); }
+    public void sofrerDano(int dano) {
+        this.vida = Math.max(0, this.vida - dano);
+    }
+
+    public double calcularDistancia(Personagem outro) {
+        int dx = this.posX - outro.getPosX();
+        int dy = this.posY - outro.getPosY();
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    public boolean alvoNoAlcance(Personagem alvo) {
+        double distancia = calcularDistancia(alvo);
+        return distancia <= this.alcanceAtaque;
+    }
+
+    public boolean estaVivo() {return this.vida > 0;}
+
+    public String getTipo() {return this.getClass().getSimpleName();}
+
+    public String getNome() {return nome;}
+
+    public int getVida() {return vida;}
+
+    public int getVidaMaxima() {return vidaMaxima;}
+
+    public int getPosX() {return posX;}
+
+    public int getPosY() {return posY;}
 }
