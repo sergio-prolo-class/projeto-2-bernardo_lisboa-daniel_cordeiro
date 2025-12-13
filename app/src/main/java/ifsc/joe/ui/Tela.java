@@ -9,10 +9,13 @@ import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Tela extends JPanel{
+public class Tela extends JPanel {
 
     private final Set<Personagem> personagens;
     private String tipoSelecionado = "TODOS";
+    private int mortesAldeao = 0;
+    private int mortesArqueiro = 0;
+    private int mortesCavaleiro = 0;
 
     public Tela() {
         this.setBackground(Color.white);
@@ -27,7 +30,13 @@ public class Tela extends JPanel{
             personagem.desenhar(g, this);
             desenharBarraVida(g, personagem);
         });
-
+        personagens.removeIf(p -> {
+            if (!p.estaVivo() && p.getAlpha() == 0f) {
+                registrarMorte(p);
+                return true;
+            }
+            return false;
+        });
         g.dispose();
     }
 
@@ -117,18 +126,24 @@ public class Tela extends JPanel{
         StringBuilder resultado = new StringBuilder();
 
         for (Personagem guerreiro : personagens) {
-            if (!(guerreiro instanceof Guerreiro)) continue;
-            if (!guerreiro.estaVivo()) continue;
+            if (!(guerreiro instanceof Guerreiro))
+                continue;
+            if (!guerreiro.estaVivo())
+                continue;
 
             if (!tipoSelecionado.equals("TODOS")) {
                 String tipo = guerreiro.getClass().getSimpleName();
-                if (!tipo.equalsIgnoreCase(tipoSelecionado)) continue;
+                if (!tipo.equalsIgnoreCase(tipoSelecionado))
+                    continue;
             }
 
             for (Personagem alvo : personagens) {
-                if (alvo == guerreiro) continue;
-                if (!alvo.estaVivo()) continue;
-                if (!guerreiro.alvoNoAlcance(alvo)) continue;
+                if (alvo == guerreiro)
+                    continue;
+                if (!alvo.estaVivo())
+                    continue;
+                if (!guerreiro.alvoNoAlcance(alvo))
+                    continue;
 
                 Guerreiro g = (Guerreiro) guerreiro;
                 resultado.append(g.atacar(alvo)).append("\n");
@@ -166,9 +181,10 @@ public class Tela extends JPanel{
         long aldeoes = personagens.stream().filter(p -> p instanceof Aldeao).count();
         long arqueiros = personagens.stream().filter(p -> p instanceof Arqueiro).count();
         long cavaleiros = personagens.stream().filter(p -> p instanceof Cavaleiro).count();
-
-        return String.format("Total: %d | Aldeões: %d | Arqueiros: %d | Cavaleiros: %d",
-                total, aldeoes, arqueiros, cavaleiros);
+        return String.format(
+                "Total: %d | Aldeões: %d | Arqueiros: %d | Cavaleiros: %d | Mortes: Aldeões=%d Arqueiros=%d Cavaleiros=%d",
+                total, aldeoes, arqueiros, cavaleiros,
+                mortesAldeao, mortesArqueiro, mortesCavaleiro);
     }
 
     public String coletarRecursos(Recurso recurso) {
@@ -189,6 +205,30 @@ public class Tela extends JPanel{
 
         this.repaint();
         return resultado.toString();
+    }
+
+    public void alternarMontado() {
+        for (Personagem p : personagens) {
+            if (tipoSelecionado.equals("TODOS") ||
+                    p.getTipo().equalsIgnoreCase(tipoSelecionado)) {
+                if (p instanceof Aldeao a) {
+                    a.alternarMontado();
+                } else if (p instanceof Cavaleiro c) {
+                    c.alternarMontado();
+                }
+            }
+        }
+        repaint();
+    }
+
+    public void registrarMorte(Personagem p) {
+        if (p instanceof Aldeao) {
+            mortesAldeao++;
+        } else if (p instanceof Arqueiro) {
+            mortesArqueiro++;
+        } else if (p instanceof Cavaleiro) {
+            mortesCavaleiro++;
+        }
     }
 
     public void criarAldeao(int x, int y) {
