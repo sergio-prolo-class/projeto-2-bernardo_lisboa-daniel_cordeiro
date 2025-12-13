@@ -170,6 +170,10 @@ public class PainelControles {
             getTela().atacarPersonagens();
             atualizarEstatisticas();
         });
+        bind(painelPrincipal, "M", () -> {
+            getTela().alternarMontado();
+            atualizarEstatisticas();
+        });
     }
 
     private void bind(JComponent comp, String key, Runnable action) {
