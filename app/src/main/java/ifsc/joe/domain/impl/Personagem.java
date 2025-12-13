@@ -5,9 +5,11 @@ import ifsc.joe.enums.Direcao;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Objects;
+import java.util.Random;
 
 public abstract class Personagem {
-    protected int vida, ataque, velocidade, esquiva;
+    protected int vida, ataque, esquiva;
+    protected double velocidade;
     protected String nome;
     protected int posX, posY;
     protected boolean atacando;
@@ -17,6 +19,8 @@ public abstract class Personagem {
     protected int alcanceAtaque;
     protected float alpha = 1.0f;
     protected boolean morrendo = false;
+    private String mensagemEsquiva;
+    private long mensagemExpiraEm = 0;
 
     public Personagem(String nome, String nomeImagem, int x, int y) {
         this.nome = nome;
@@ -64,6 +68,12 @@ public abstract class Personagem {
     }
 
     public void sofrerDano(int dano) {
+        Random random = new Random();
+        int aleatorio = random.nextInt(101);
+        if (aleatorio <= this.esquiva) {
+            mostrarMensagem("Esquivou!");
+            return;
+        }
         this.vida = Math.max(0, this.vida - dano);
         if (this.vida == 0 && !morrendo) {
             iniciarFadeOut();
@@ -72,17 +82,19 @@ public abstract class Personagem {
 
     public void iniciarFadeOut() {
         morrendo = true;
-
         Timer timer = new Timer(50, e -> {
             alpha -= 0.05f;
-
             if (alpha <= 0f) {
                 alpha = 0f;
                 ((Timer) e.getSource()).stop();
             }
         });
-
         timer.start();
+    }
+
+    public void mostrarMensagem(String m) {
+        this.mensagemEsquiva = m;
+        this.mensagemExpiraEm = System.currentTimeMillis() + 1000;
     }
 
     public double calcularDistancia(Personagem outro) {
@@ -123,7 +135,15 @@ public abstract class Personagem {
     public int getPosY() {
         return posY;
     }
+
     public float getAlpha() {
         return alpha;
+    }
+
+    public String getMensagemEsquiva() {
+        if (System.currentTimeMillis() > mensagemExpiraEm) {
+            mensagemEsquiva = null;
+        }
+        return mensagemEsquiva;
     }
 }

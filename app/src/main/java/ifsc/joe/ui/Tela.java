@@ -92,6 +92,11 @@ public class Tela extends JPanel {
                     personagem.getPosX(),
                     personagem.getPosY() - 12);
         }
+        if (personagem.getMensagemEsquiva() != null) {
+            g.setColor(Color.BLACK);
+            g.setFont(new Font("Arial", Font.PLAIN, 12));
+            g.drawString(personagem.getMensagemEsquiva(), barraX, barraY - 20);
+        }
     }
 
     private void desenharTextoVida(Graphics g, Personagem personagem, int barraX, int barraY, int larguraBarra) {
