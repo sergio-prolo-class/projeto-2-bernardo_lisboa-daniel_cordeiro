@@ -13,7 +13,7 @@ public abstract class Personagem {
     protected String nome;
     protected int posX, posY;
     protected boolean atacando;
-    public Image icone;
+    protected Image icone;
     protected String nomeImagem;
     protected int vidaMaxima;
     protected int alcanceAtaque;
@@ -108,6 +108,13 @@ public abstract class Personagem {
         return distancia <= this.alcanceAtaque;
     }
 
+    public Image getIcone() {
+        return this.icone;
+    }
+
+    public int getAlcanceAtaque() {
+        return this.alcanceAtaque;
+    }
     public boolean estaVivo() {
         return this.vida > 0;
     }

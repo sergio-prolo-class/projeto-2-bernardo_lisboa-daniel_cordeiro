@@ -29,6 +29,7 @@ public class Tela extends JPanel {
         this.personagens.forEach(personagem -> {
             personagem.desenhar(g, this);
             desenharBarraVida(g, personagem);
+            desenharAlcanceAtaque(g, personagem);
         });
         personagens.removeIf(p -> {
             if (!p.estaVivo() && p.getAlpha() == 0f) {
@@ -37,6 +38,7 @@ public class Tela extends JPanel {
             }
             return false;
         });
+
         g.dispose();
     }
 
@@ -49,7 +51,7 @@ public class Tela extends JPanel {
         int barraY = personagem.getPosY() - alturaBarra - margemSuperior;
 
         if (barraY < 0) {
-            barraY = personagem.getPosY() + personagem.icone.getHeight(null) + 2;
+            barraY = personagem.getPosY() + personagem.getIcone().getHeight(null) + 2;
         }
 
         double porcentagemVida = personagem.getVida() / (double) personagem.getVidaMaxima();
@@ -111,6 +113,22 @@ public class Tela extends JPanel {
 
         g.setColor(Color.WHITE);
         g.drawString(textoVida, textoX, textoY);
+    }
+
+    private void desenharAlcanceAtaque(Graphics g, Personagem personagem) {
+        if (personagem instanceof Guerreiro) {
+            Graphics2D g2d = (Graphics2D) g;
+            g2d.setColor(new Color(255, 0, 0, 50)); // Vermelho semi-transparente
+            g2d.setStroke(new BasicStroke(2));
+
+            int centroX = personagem.getPosX() + personagem.getIcone().getWidth(null)/2;
+            int centroY = personagem.getPosY() + personagem.getIcone().getHeight(null)/2;
+
+            g2d.drawOval(centroX - personagem.getAlcanceAtaque(),
+                    centroY - personagem.getAlcanceAtaque(),
+                    personagem.getAlcanceAtaque() * 2,
+                    personagem.getAlcanceAtaque() * 2);
+        }
     }
 
     public void criarPersonagem(Personagem personagem) {
@@ -186,11 +204,13 @@ public class Tela extends JPanel {
         long aldeoes = personagens.stream().filter(p -> p instanceof Aldeao).count();
         long arqueiros = personagens.stream().filter(p -> p instanceof Arqueiro).count();
         long cavaleiros = personagens.stream().filter(p -> p instanceof Cavaleiro).count();
+
         return String.format(
                 "Total: %d | Aldeões: %d | Arqueiros: %d | Cavaleiros: %d | Mortes: Aldeões=%d Arqueiros=%d Cavaleiros=%d",
                 total, aldeoes, arqueiros, cavaleiros,
-                mortesAldeao, mortesArqueiro, mortesCavaleiro);
+                    mortesAldeao, mortesArqueiro, mortesCavaleiro);
     }
+
 
     public String coletarRecursos(Recurso recurso) {
         StringBuilder resultado = new StringBuilder();
@@ -234,6 +254,10 @@ public class Tela extends JPanel {
         } else if (p instanceof Cavaleiro) {
             mortesCavaleiro++;
         }
+
+        System.out.println("\n=== ATUALIZAÇÃO DE BAIXAS ===");
+        System.out.println("Aldeões: " + mortesAldeao + " | Arqueiros: " + mortesArqueiro + " | Cavaleiros: " + mortesCavaleiro);
+        System.out.println("Total: " + (mortesAldeao + mortesArqueiro + mortesCavaleiro));
     }
 
     public void criarAldeao(int x, int y) {
