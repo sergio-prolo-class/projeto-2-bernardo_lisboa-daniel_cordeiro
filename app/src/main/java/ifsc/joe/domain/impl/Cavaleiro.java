@@ -6,7 +6,7 @@ import ifsc.joe.domain.api.Guerreiro;
 public class Cavaleiro extends Personagem implements  ComMontaria, Guerreiro {
     public static final String NOME_IMAGEM = "cavaleiro";
     private boolean montado;
-    private double velocidadeOriginal;
+    private final double velocidadeOriginal;
 
     public Cavaleiro(int x, int y) {
         super("Cavaleiro", NOME_IMAGEM, x, y);
@@ -17,12 +17,12 @@ public class Cavaleiro extends Personagem implements  ComMontaria, Guerreiro {
 
     @Override
     public void inicializarAtributos() {
-        this.vida = 10;
-        this.vidaMaxima = 10;
-        this.ataque = 10;
+        this.vida = 50;
+        this.vidaMaxima = 50;
+        this.ataque = 3;
         this.velocidade = 10;
-        this.esquiva = 10;
-        this.alcanceAtaque = 15;
+        this.esquiva = 15;
+        this.alcanceAtaque = 75;
     }
 
     @Override
@@ -76,9 +76,5 @@ public class Cavaleiro extends Personagem implements  ComMontaria, Guerreiro {
     @Override
     public String getNome() {
         return super.getNome() + (montado ? " (Montado)" : " (Desmontado)");
-    }
-
-    public boolean estaMontado() {
-        return montado;
     }
 }

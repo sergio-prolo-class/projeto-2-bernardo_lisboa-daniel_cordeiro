@@ -20,12 +20,12 @@ public class Arqueiro extends Personagem implements Coletador, Guerreiro {
 
     @Override
     public void inicializarAtributos() {
-        this.vida = 10;
-        this.vidaMaxima = 10;
-        this.ataque = 1;
-        this.velocidade = 10;
-        this.esquiva = 10;
-        this.alcanceAtaque = 100;
+        this.vida = 35;
+        this.vidaMaxima = 35;
+        this.ataque = 2;
+        this.velocidade = 5;
+        this.esquiva = 25;
+        this.alcanceAtaque = 150;
     }
 
     @Override
