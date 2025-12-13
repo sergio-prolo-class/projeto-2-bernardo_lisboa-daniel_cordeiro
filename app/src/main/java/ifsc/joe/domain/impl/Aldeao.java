@@ -9,7 +9,7 @@ public class Aldeao extends Personagem implements Coletador, ComMontaria{
     public static final String NOME_IMAGEM = "aldeao";
     public static final Set<Recurso> COLETAVEIS = Set.of(Recurso.COMIDA, Recurso.OURO);
     private boolean montado;
-    private double velocidadeOriginal;
+    private final double velocidadeOriginal;
 
     public Aldeao(int x, int y) {
         super("Aldeao", NOME_IMAGEM, x, y);
@@ -20,10 +20,9 @@ public class Aldeao extends Personagem implements Coletador, ComMontaria{
 
     @Override
     public void inicializarAtributos() {
-        this.vida = 10;
-        this.vidaMaxima = 10;
-        this.ataque = 10;
-        this.velocidade = 10;
+        this.vida = 25;
+        this.vidaMaxima = 25;
+        this.velocidade = 4;
         this.esquiva = 10;
     }
 
