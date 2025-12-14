@@ -211,27 +211,6 @@ public class Tela extends JPanel {
                     mortesAldeao, mortesArqueiro, mortesCavaleiro);
     }
 
-
-    public String coletarRecursos(Recurso recurso) {
-        StringBuilder resultado = new StringBuilder();
-
-        this.personagens.stream()
-                .filter(p -> tipoSelecionado.equals("TODOS") || p.getTipo().equalsIgnoreCase(tipoSelecionado))
-                .filter(p -> p instanceof Coletador)
-                .forEach(p -> {
-                    Coletador coletador = (Coletador) p;
-                    boolean coletou = coletador.coletar(recurso);
-                    resultado.append(p.getNome())
-                            .append(": ")
-                            .append(coletou ? "Coletou " : "Não pode coletar ")
-                            .append(recurso.toString().toLowerCase())
-                            .append("\n");
-                });
-
-        this.repaint();
-        return resultado.toString();
-    }
-
     public void alternarMontado() {
         for (Personagem p : personagens) {
             if (tipoSelecionado.equals("TODOS") ||

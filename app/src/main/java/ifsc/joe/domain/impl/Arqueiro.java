@@ -9,13 +9,11 @@ public class Arqueiro extends Personagem implements Coletador, Guerreiro {
     public static final String NOME_IMAGEM = "arqueiro";
     public static final Set<Recurso> COLETAVEIS = Set.of(Recurso.COMIDA, Recurso.MADEIRA);
     private int flechas;
-    private int madeiraColetada;
 
     public Arqueiro(int x, int y) {
         super("Arqueiro", NOME_IMAGEM, x, y);
         inicializarAtributos();
         this.flechas = 10;
-        this.madeiraColetada = 0;
     }
 
     @Override
@@ -29,13 +27,12 @@ public class Arqueiro extends Personagem implements Coletador, Guerreiro {
     }
 
     @Override
-    public boolean coletar(Recurso recurso) {
+    public boolean coletar(Recurso recurso) {  //Apenas implementado para cumprir a base sem fazer a parte de coleta
         if (!COLETAVEIS.contains(recurso)) {
             return false;
         }
 
         if (recurso == Recurso.MADEIRA) {
-            madeiraColetada++;
         }
 
         return true;
@@ -75,39 +72,10 @@ public class Arqueiro extends Personagem implements Coletador, Guerreiro {
                 alvo.getNome(), alvo.getVida());
     }
 
-    public String produzirFlechas() {
-        if (madeiraColetada <= 0) {
-            return "Arqueiro não tem madeira para produzir flechas!";
-        }
-
-        madeiraColetada--;
-        flechas += 10;
-        return String.format(
-                "Arqueiro produziu 10 flechas com madeira.%n" +
-                        "Flechas: %d | Madeira restante: %d",
-                flechas, madeiraColetada
-        );
-    }
-
-    public String recarregarFlechas(int quantidade) {
-        if (quantidade <= 0) {
-            return "Quantidade inválida de flechas!";
-        }
-
-        flechas += quantidade;
-        return String.format("Arqueiro recarregou %d flechas. Total: %d", quantidade, flechas);
-    }
-
     @Override
     public String getNome() {
         return super.getNome() + " [" + flechas + " flechas]";
     }
 
-    public int getFlechas() {
-        return flechas;
-    }
-
-    public int getMadeiraColetada() {
-        return madeiraColetada;
-    }
+    public int getFlechas() {return flechas;}
 }

@@ -27,7 +27,7 @@ public class Aldeao extends Personagem implements Coletador, ComMontaria{
     }
 
     @Override
-    public boolean coletar(Recurso recurso) {
+    public boolean coletar(Recurso recurso) { //Apenas implementado para cumprir a base sem fazer a parte de coleta
         boolean podeColetar = COLETAVEIS.contains(recurso);
         if (podeColetar) {
         }
