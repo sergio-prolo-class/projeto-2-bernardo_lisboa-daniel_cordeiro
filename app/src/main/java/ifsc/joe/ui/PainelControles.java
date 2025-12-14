@@ -30,6 +30,7 @@ public class PainelControles {
     private JButton buttonBaixo;
     private JButton buttonDireita;
     private JLabel logo;
+    private JButton montariaButton;
     private JButton btnLimpar;
     private JLabel lblEstatisticas;
 
@@ -59,6 +60,7 @@ public class PainelControles {
         configurarBotoesMovimento();
         configurarBotoesCriacao();
         configurarBotaoAtaque();
+        configurarBotaoMontaria();
     }
 
     private void configurarBotoesSelecao() {
@@ -110,6 +112,12 @@ public class PainelControles {
     private void configurarBotaoAtaque() {
         atacarButton.addActionListener(e -> {
             getTela().atacarPersonagens();
+            atualizarEstatisticas();
+        });
+    }
+    private void configurarBotaoMontaria() {
+        montariaButton.addActionListener(e -> {
+            getTela().alternarMontado();
             atualizarEstatisticas();
         });
     }
